@@ -366,6 +366,45 @@ def home_view(request):
     {% endfor %}
 </div>
 ```
+- Adding form element is also possible:
+```html
+<form action="https://www.google.com/search" method="get">  <!--action creates a link, watch out for the search criteria-->
+<form action="" method="get">
+    <input type="text", name="q", placeholder="Title">
+    <input type="submit" value="Search">
+</form>
+```
+## Forms
+- Create forms.py file under fscohort app.
+- Like models, forms structure very similar:
+```py
+from django import forms
+
+class StudentForm(forms.Form):
+    first_name = forms.CharField(max_length=50)
+    last_name = forms.CharField(max_length=50)
+    number = forms.IntegerField()
+```
+- After created form, we want to display it, so modify the views.py:
+```py
+from .forms import StudentForm
+form = StudentForm()  # This renders an empty form of Students, but need to use it into a dictionary.
+     
+context = {
+    'title': 'clarusway',
+    'dict1': {'django': 'best framework'},
+    'my_list': [2, 3, 4, 5],
+    'form': form,
+}
+return render(request, "fscohort/home.html", context)
+```
+- Lets use it on home.html:
+```html
+<form action="." method="get">
+{{ form }}
+</form>
+```
+
 ### Working with ImageField:
 - Need to install:
 pip install pillow

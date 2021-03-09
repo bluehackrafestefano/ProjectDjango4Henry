@@ -1,10 +1,28 @@
 <h1>Hello, this is home page</h1>
-    {{ title | upper | length }} <br>
-    {{ dict_1 }} <br> <br>
-    
-    {% for i in my_list %}
-        {{ i }} <br>
-    {% endfor %}
-    <br>
-    <br>
-    {{ my_list }}
+{{ title | upper | length }} <br>
+
+{{ dict_1 }} <br> <br>
+
+{% for i in my_list %}
+    {{ i }} <br>
+{% endfor %}
+
+<br><br>
+
+{{ my_list }}
+
+<br>
+
+<h4>This is a form example:</h4>
+
+<br>
+
+<!-- <form action="https://www.google.com/search" method="get">  action creates a link, watch out for the search criteria
+<form action="" method="get">
+    <input type="text", name="q", placeholder="Title">
+    <input type="submit" value="Search">
+</form> -->
+
+<form action="." method="get">
+{{ form }}
+</form>
