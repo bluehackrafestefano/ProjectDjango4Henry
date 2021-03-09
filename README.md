@@ -618,6 +618,48 @@ path('<int:id>', student_detail, name='detail'),
 
 {% endblock content %}
 ```
+- Need to add delete and update links on detail page:
+- First create view:
+```py
+def student_delete(request, id):
+    student = get_object_or_404(Student, id=id)
+    if request.method == 'POST':
+        student.delete()
+        return redirect('list')
+    return render(request, "fscohort/student_delete.html")
+```
+- Add urls.py the path:
+```py
+path('<int:id>/delete', student_delete, name='delete'),
+```
+- Add a delete button to the list page:
+```html
+<a href="{% url 'delete' student.id %}">
+<button>Delete</button>
+</a>
+```
+- Prepare the delete page:
+```html
+{% extends 'fscohort/base.html' %}
+
+{% block title %}
+    student delete
+{% endblock title %}
+
+{% block content %}
+
+<h2>Student Delete</h2>
+
+<form action="" method="POST">
+    <p>Sure?</p>
+    {% csrf_token %}
+    <input type="submit" value="Yes">
+    <a href="{% url 'list' %}">No</a>
+</form>
+
+{% endblock content %}
+```
+
 
 
 
