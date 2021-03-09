@@ -404,16 +404,133 @@ return render(request, "fscohort/home.html", context)
 {{ form }}
 </form>
 ```
+- ModelForms are similar to the regular forms, first they must be created on forms.py:
+```py
+from .models import Student
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ("first_name", "last_name")
+        # fields = '__all__'
+```
+- Modifications on form fields and labeling also possible:
+```py
+class StudentForm(forms.ModelForm):
+    
+    first_name = forms.CharField(label="Your Name")
+    
+    class Meta:
+        model = Student
+        fields = '__all__'
+```
+- To override some fields:
+```py
+class StudentForm(forms.ModelForm):
+    
+    first_name = forms.CharField(label="Your Name")
+    
+    class Meta:
+        model = Student
+        # fields = ("first_name", "last_name")
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['first_name'].label = "My Name"
+```
+- May recall info form the Student model, first add a new function to the views.
+```py
+from .models import Student
+
+def student_list(request):
+    students = Student.objects.all()
+    
+    context = {
+        'students': students
+    }
+
+    return render(request, "fscohort/student_list.html", context)
+```
+- Need to create a template named student_list.html:
+```html
+{% extends 'fscohort/base.html' %}
+
+{% block content %}
+
+    <h1>Student List Page</h1>
+
+    {{ students }}
+
+{% endblock content %}
+```
+- May use template inheritence, for this reason create a base.html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>fscohort</title>
+</head>
+<body>
+    
+    {% block content %}
+        
+    {% endblock content %}
+   
+</body>
+</html>
+```
+- This content can be used again and again for other pages:
+```html
+{% extends 'fscohort/base.html' %}
+
+{% block content %}
+    <h1>Hello, this is home page</h1>
+{% endblock content %}
+```
+- {{ students }} in student_list will return a query set. Need to put this in a for loop to see content:
+```html
+<ul>
+{% for student in students %}
+    <li>{{ student }}</li>
+{% endfor %}
+</ul>
+```
+- A list of students can be seen:
+```tx
+Helen
+Robert
+Rafe
+```
+- Other specialties can be seen:
+```html
+<li>{{ student.number }}-{{ student }} {{ student.last_name }}</li>
+```
+- The result will be:
+```tx
+1-Helen Jedi
+2-Robert Pearl
+3-Rafe Stefano
+```
+
+
+
 
 ### Working with ImageField:
 - Need to install:
+```py
 pip install pillow
---------------------------------------------------------
+```
 
 ### Changing the DB:
-- By default it's sqlite3, to change it to PostgreSQL:
-- Install PostgreSQL
+- By default it's sqlite3, can be changed to another type, such as PostgreSQL 
+- Install PostgreSQL:
+```py
 pip install psycopg2
+```
 - change the name of engine and db on settings file
 
 - Petclinic: Rafe - 123456Rs

@@ -1,5 +1,10 @@
-<h1>Hello, this is home page</h1>
-{{ title | upper | length }} <br>
+{% extends 'fscohort/base.html' %}
+
+{% block content %}
+    <h1>Hello, this is home page</h1>
+{% endblock content %}
+    
+<!-- {{ title | upper | length }} <br>
 
 {{ dict_1 }} <br> <br>
 
@@ -15,7 +20,7 @@
 
 <h4>This is a form example:</h4>
 
-<br>
+<br> -->
 
 <!-- <form action="https://www.google.com/search" method="get">  action creates a link, watch out for the search criteria
 <form action="" method="get">
@@ -23,6 +28,6 @@
     <input type="submit" value="Search">
 </form> -->
 
-<form action="." method="get">
+<!-- <form action="." method="get">
 {{ form }}
-</form>
+</form> -->
