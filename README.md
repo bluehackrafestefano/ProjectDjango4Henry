@@ -580,6 +580,44 @@ def student_add(request):
     }
     return render(request, "fscohort/student_add.html", context)
 ```
+- After completing the form, customer must be redirected somewhere:
+```py
+from django.shortcuts import render, redirect
+
+if form.is_valid():
+    form.save()
+    return redirect('list')  # This returns to the listing page.
+```
+- Display one of student detail:
+- First modify the views.py:
+```py
+def student_detail(request, id):
+    student = Student.objects.get(id=id)
+    context = {
+        'student': student
+    }
+    return render(request, "fscohort/student_detail.html", context)
+```
+```py
+path('add/', student_add, name='add'),
+path('<int:id>', student_detail, name='detail'),
+```
+- Create student detail page:
+```html
+{% extends 'fscohort/base.html' %}
+
+{% block title %}
+    student details
+{% endblock title %}
+
+{% block content %}
+
+<h2>Student Detail</h2>
+
+{{ student.number }} - {{ student.first_name }} - {{ student.last_name }} 
+
+{% endblock content %}
+```
 
 
 
