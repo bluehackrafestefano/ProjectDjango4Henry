@@ -515,6 +515,72 @@ Rafe
 2-Robert Pearl
 3-Rafe Stefano
 ```
+- How to create a student in a template? First of all need to add a student add function under student list function:
+```py
+def student_add(request):
+    # First need to show an empty form of Students
+    form = StudentForm()
+    context = {
+       'form': form 
+    }
+    return render(request, "fscohort/student_add.html", context)
+```
+- Then modify urls.py and add new function:
+```py
+path('add/', student_add),
+```
+- Create student_add.html:
+```html
+{% extends 'fscohort/base.html' %}
+
+{% block title %}
+    add student
+{% endblock title %}
+    
+
+{% block content %}
+
+<h2>Add Student</h2>
+
+<form action="" method="POST">
+
+    {{ form }}
+    <input type="submit" value="Add">
+
+</form>
+
+{% endblock content %}
+```
+- The result: form can be seen on the page!
+- The form can be easily seen as paragraph mode:
+```html
+{{ form.as_p }}
+```
+- When using post method csrf token must be used. This is for transferring cookies.
+```html
+<form action="" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Add">
+
+</form>
+```
+- For validation may add some codes:
+```py
+def student_add(request):
+    # First need to show an empty form of Students
+    form = StudentForm()
+    if request.method == "POST":
+        print(request.POST)
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+    context = {
+        'form': form
+    }
+    return render(request, "fscohort/student_add.html", context)
+```
+
 
 
 

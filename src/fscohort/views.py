@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-# from .forms import StudentForm
+# from django.http import HttpResponse
+from .forms import StudentForm
 from .models import Student
 
 def home_view(request):
@@ -27,5 +27,17 @@ def student_list(request):
     context = {
         'students': students
     }
-
     return render(request, "fscohort/student_list.html", context)
+
+def student_add(request):
+    # First need to show an empty form of Students
+    form = StudentForm()
+    if request.method == "POST":
+        print(request.POST)
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+    context = {
+        'form': form
+    }
+    return render(request, "fscohort/student_add.html", context)
