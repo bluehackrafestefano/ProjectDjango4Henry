@@ -5,7 +5,7 @@
 - SQLite
 - and may install DB Browser to your local.
 
-### Create first project and app:
+## Create first project and app:
 
 - Create a working directory, cd to new directory
 - Create virtual environment as a best practice:
@@ -72,19 +72,21 @@ urlpatterns = [
 ]
 ```
 - Go to urls.py and add:
+```py
 path("home/", include(firstapp.urls))
-
+```
 - Go to settings.py and add under INSTALLED_APPS:
+```py
 'firstapp.apps.FirstappConfig'
-    # 'fscohort'
-- Start our project:
+# 'fscohort'
+```
+- Run our project:
 ```py
 python manage.py runserver
 ```
 - Go to http://localhost:8000/home/ in your browser, and you should see the text “Hello, world.”, which you defined in the index view.
 
 ### Login Admin Site:
-
 - We need to create db, apply some table to database. Go to manage.py level directory:
 ```py
 python manage.py migrate
@@ -95,11 +97,10 @@ python manage.py createsuperuser
 ```
 - Enter your desired username, email adress, password twice.
 - Go to http://127.0.0.1:8000/admin/ You should see the admin's login screen.
-
 - After you login, you should see a few types of editable content: groups and users. They are provided by django.contrib.auth, the authentication framework shipped by Django.
 
-##
-- add a .gitignore file, not send the big files, add djangoenv/
+### Managing GitHub
+- Add a .gitignore file, not send the big files, add djangoenv/
 - There are password hashers in django, the first one is the default:
 ```py
 PASSWORD_HASHERS = [
@@ -110,7 +111,6 @@ PASSWORD_HASHERS = [
 ]
 ```
 - To use Argon2 as your default storage algorithm, do the following, see documents:
-
 - Install the argon2-cffi library. This can be done by running:
 ```py
 python -m pip install django[argon2]
@@ -120,9 +120,9 @@ python -m pip install django[argon2]
 python -m pip install argon2-cffi
 ```
 - (along with any version requirement from Django’s setup.cfg)
-
 - Modify PASSWORD_HASHERS to list Argon2PasswordHasher first.
 
+## Creating Models
 - Add models.py under fscohort app folder Student class:
 ```py
 class Student(models.Model):
@@ -138,11 +138,12 @@ python manage.py makemigrations
 ```py
 python manage.py migrate
 ```
+```tx
 Operations to perform:
   Apply all migrations: admin, auth, contenttypes, fscohort, sessions
 Running migrations:
   Applying fscohort.0001_initial... OK
-
+```
 - To add our model to admin panel, go to admin.py under fscohort add:
 ```py
 from .models import Student
@@ -162,14 +163,19 @@ class Student(models.Model):
         return self.first_name
         # return str(self.first_name)
 ```
-### Migrate Command
+## Migrating models
 - Runs all migrations in the project to the current state
 - Can also run only migrations in a specific app to a specific number using:
+```py
 python3 manage.py migrate appname number
 python3 manage.py migrate adoptions 1
+```
 - To see all migrations:
+```py
 python3 manage.py showmigrations
-
+```
+- The result will be:
+```tx
 admin
  [ ] 0001_initial
  [ ] 0002_logentry_remove_auto_add
@@ -194,7 +200,7 @@ contenttypes
  [ ] 0002_remove_content_type_name
 sessions
  [ ] 0001_initial
-
+```
  - Square brackets on the left with empty spaces indicates this migrations not been yet applied. To apply these changes:
  ```py
  python3 manage.py migrate
@@ -217,8 +223,10 @@ from fscohort.models import Student
 s1 = Student(first_name="John", last_name="Black", number="155")
 ```
 - We created a student object:
+```tx
 s1
 <Student: Student object (None)>
+```
 - Save the student to the table:
 ```sh
 s1.save()
@@ -273,64 +281,74 @@ lte
 s4 = Student.objects.filter(first_name__startswith="R")
 ```
 
-### The Django template language
-
+## The Django template language
 - Variables: {{ variable }}
-
+```html
 My first name is {{ first_name }}. My last name is {{ last_name }}.
+```
 - With a context of {'first_name': 'John', 'last_name': 'Doe'}, this template renders to:
 My first name is John. My last name is Doe.
 
-
-- Tags: {% tag %}
-
+### Tags: {% tag %}
+```html
 {% if %}
+{% endif %}
+```
 - Most tags accept arguments:
+```html
 {% cycle 'odd' 'even' %}
+```
 - Some tags require beginning and ending tags:
-{% if user.is_authenticated %}Hello, {{ user.username }}.{% endif %}
+```html
+{% if user.is_authenticated %}
+    Hello, {{ user.username }}
+{% endif %}
+```
+### Filters transform the values of variables and tag arguments: {{ variable|filter }}
+```html
+{'django': 'the web framework for perfectionists with deadlines'}
+```
+- This template renders to: "The Web Framework For Perfectionists With Deadlines"
 
-
-- Filters transform the values of variables and tag arguments: {{ variable|filter }}
-
-{'django': 'the web framework for perfectionists with deadlines'}, this template renders to:
-The Web Framework For Perfectionists With Deadlines
-
-
-- Comments: 
+### Comments: 
   - Single line: {# this won't be rendered #}
   - Multi line: {% comment %}
 
 ### Views:
+- Some experimentation about request object:
+```py
 def home_view(request):
     # print(request.GET)
     # print(request.user)
     # print(request.path)
     # print(request.method)
     # print(request.GET.get("q"))
-    return HttpResponse("Hello, Eda")
-
-- create templates folder under fscohort
-- create fscohort folder under templates
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Hello, this is home page</h1>
+    return HttpResponse("Hello, Jane")
+```
+- Modify the view.py file under fscohort:
+```py
+def home_view(request):
+    # return HttpResponse("Hi from home page!")
+    context = {
+        'title': 'clarusway',
+        'dict1': {'django': 'best framework'},
+        'my_list': [2, 3, 4]
+    }
+    return render(request, "home.html", context)
+```
+- Here we added a dictionary, and point to a template named home.html. Need to create this file!
+- Create templates/fscohort directory under fscohor, and put a home.html file under it:
+```html
+<h1>Hello, this is home page</h1>
     {{ title }} <br> <br>
     {{ dict_1 }} <br> <br>
     {% for i in my_list %}
     {{ i }} <br>
     {% endfor %}
     {{ my_list }}
-</body>
-</html>
--------------------------------------------------------
+```
+- A different div example from PetClinic project:
+```html
 <div>
     {% for pet in pets %}
 
@@ -347,8 +365,7 @@ def home_view(request):
 
     {% endfor %}
 </div>
---------------------------------------------------------
-
+```
 ### Working with ImageField:
 - Need to install:
 pip install pillow
