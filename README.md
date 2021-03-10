@@ -659,11 +659,61 @@ path('<int:id>/delete', student_delete, name='delete'),
 
 {% endblock content %}
 ```
+- On the home page, lets create a button to link to other pages, for example add student:
+```html
+<a href="{% url 'add' %}"><button>Add Student</button></a>
+```
+- Now finally, lets write update student page, first start with the view. It will be a combination of add and detail forms, first bring the info of the student form db and then able to modify and send it:
+```py
+def student_update(request, id):
+    student = Student.objects.get(id=id)  # Select the student with id
+    form = StudentForm(instance=student)  # Bring the student form, it will be filled with student
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect('list')
+    context = {
+        'student': student,
+        'form': form,
+    }
+    return render(request, 'fscohort/student_update.html', context)
+```
+- Add the url path, dont forget to import:
+```py
+path("<int:id>/update", student_update, name='update'),
+```
+- Time to create template of student_update.html:
+```html
+{% extends 'fscohort/base.html' %}
 
+{% block title %}
+    update student
+{% endblock title %}
+    
 
+{% block content %}
 
+<h2>Update Student</h2>
 
+<form action="" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update">
+</form>
 
+<a href="{% url 'list' %}"><button>Cancel</button></a>
+
+{% endblock content %}
+```
+- Add student detail page an update button:
+```html
+<a href="{% url 'update' student.id%}"><button>Update</button></a>
+```
+- And, add a button to cancel and turn back to student list:
+```html
+<a href="{% url 'list' %}"><button>Cancel</button></a>
+```
 
 ### Working with ImageField:
 - Need to install:
@@ -678,10 +728,8 @@ pip install pillow
 pip install psycopg2
 ```
 - change the name of engine and db on settings file
-
 - Petclinic: Rafe - 123456Rs
 - Portfolio: rafe - 123
-
 
 ### Add bootstrap:
 - Change title

@@ -31,7 +31,7 @@ def student_list(request):
 
 def student_add(request):
     # First need to show an empty form of Students
-    form = StudentForm()
+    form = StudentForm()  # Bring the student form, it will be empty
     if request.method == "POST":
         print(request.POST)
         form = StudentForm(request.POST)
@@ -56,3 +56,17 @@ def student_delete(request, id):
         student.delete()
         return redirect('list')
     return render(request, "fscohort/student_delete.html")
+
+def student_update(request, id):
+    student = Student.objects.get(id=id)  # Select the student with id
+    form = StudentForm(instance=student)  # Bring the student form, it will be filled with student
+    if request.method == 'POST':
+        form = StudentForm(request.POST, instance=student)
+        if form.is_valid():
+            form.save()
+            return redirect('list')
+    context = {
+        'student': student,
+        'form': form,
+    }
+    return render(request, 'fscohort/student_update.html', context)

@@ -9,9 +9,9 @@
 <h2>Student Detail</h2>
 
 {{ student.number }} - {{ student.first_name }} - {{ student.last_name }}
-
-<a href="{% url 'delete' student.id %}">
-<button>Delete</button>
-</a>
+<br><br>
+<a href="{% url 'delete' student.id %}"><button>Delete</button></a>
+<br><br>
+<a href="{% url 'update' student.id%}"><button>Update</button></a>
 
 {% endblock content %}
